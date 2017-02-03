@@ -36,7 +36,7 @@ $app->register(new DoctrineCacheServiceProvider(), [
 use ImageStack\Provider\ImageStackProvider;
 $app->register(new ImageStackProvider(), [
     'image.backends.options' => [
-        // http backend on unsplash.com
+        // http backend on pexels.com
         'web' => [
             'driver' => 'http',
             'root_url' => 'https://static.pexels.com/photos/',
