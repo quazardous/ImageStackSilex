@@ -1,0 +1,18 @@
+{
+    "name": "quazardous/silex-imagestack",
+    "description" : "Silex Image Stack",
+    "keywords": ["image", "silex"],
+    "license": "MIT",
+    "require": {
+        "quazardous/ImageStack": "^1.1",
+        "silex/silex": "^2.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "ImageStack\\": "src/"
+        }
+    },
+    "suggest": {
+        "sergiors/doctrine-cache-service-provider": "Doctrine cache service provider for Silex/Pimple"
+    }
+}
