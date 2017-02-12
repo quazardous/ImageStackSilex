@@ -52,8 +52,8 @@ $app->register(new ImageStackProvider(), [
             'driver' => 'path_rule',
             'backend' => 'web_cache',
             'rules' => [
-                ['@^((style|format)/[^/]+/)(.*)$@', [3]],
-                ['@^(original/)(.*)$@', [2]],
+                ['@^((style|format)/[^/]+/)(.*)$@', [3]], // path is the 3rd parenthesis
+                ['@^(original/)(.*)$@', [2]], // path is the 2nd parenthesis
             ],
         ],
     ],
