@@ -68,6 +68,11 @@ $app->register(new ImageStackProvider(), [
                 ['/.*/', false], // trigger a 404
             ],
         ],
+        'watermark' => [
+            'driver' => 'watermark',
+            'watermark' => __DIR__ . '/resources/coffee.png',
+            'anchor' => 'bottom right',
+        ],
     ],
     'image.storages.options' => [
         // mount the image on the web bootstrap base folder
@@ -82,7 +87,7 @@ $app->register(new ImageStackProvider(), [
     'image.stacks.options' => [
         'pexels' => [
             'backend' => 'web_final',
-            'manipulators' => 'thumbnails',
+            'manipulators' => ['thumbnails', 'watermark'],
             'storage' => 'img',
         ],
     ],
