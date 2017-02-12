@@ -20,6 +20,7 @@ use ImageStack\ImageManipulator\ThumbnailerImageManipulator;
 use ImageStack\ImageManipulator\ThumbnailRule\PatternThumbnailRule;
 use ImageStack\ImageBackend\PathRule\PatternPathRule;
 use ImageStack\ImageBackend\PathRuleImageBackend;
+use ImageStack\ImageManipulator\WatermarkImageManipulator;
 
 class ImageStackProvider implements ServiceProviderInterface {
 	
@@ -285,6 +286,51 @@ class ImageStackProvider implements ServiceProviderInterface {
             }
             return new ThumbnailerImageManipulator($app['imagine'], $rules);
         });
+
+        $app['image.manipulator_factory.watermark'] = $app->protect(function ($options) use ($app) {
+            $watermark = $options['watermark'];
+            unset($options['watermark']);
+            if (isset($options['anchor'])) {
+                if (is_string($options['anchor'])) {
+                    $anchor = 0x00;
+                    foreach (preg_split('/[^A-Z]+/', strtoupper($options['anchor'])) as $v) {
+                        $c = WatermarkImageManipulator::class . '::ANCHOR_' . $v;
+                        if (!defined($c)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid anchor value: %s', $v));
+                        }
+                        $anchor |= constant($c);
+                    }
+                    $options['anchor'] = $anchor;
+                }
+            }
+            if (isset($options['repeat'])) {
+                if (is_string($options['repeat'])) {
+                    $repeat = 0x00;
+                    foreach (preg_split('/[^A-Z]+/', strtoupper($options['repeat'])) as $v) {
+                        $c = WatermarkImageManipulator::class . '::REPEAT_' . $v;
+                        if (!defined($c)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid repeat value: %s', $v));
+                        }
+                        $repeat |= constant($c);
+                    }
+                    $options['repeat'] = $repeat;
+                }
+            }
+            if (isset($options['reduce'])) {
+                if (is_string($options['reduce'])) {
+                    $reduce = 0x00;
+                    foreach (preg_split('/[^A-Z]+/', strtoupper($options['reduce'])) as $v) {
+                        $c = WatermarkImageManipulator::class . '::REDUCE_' . $v;
+                        if (!defined($c)) {
+                            throw new \InvalidArgumentException(sprintf('Invalid reduce value: %s', $v));
+                        }
+                        $reduce |= constant($c);
+                    }
+                    $options['reduce'] = $reduce;
+                }
+            }
+            return new WatermarkImageManipulator($app['imagine'], $watermark, $options);
+        });
         
         $app['image.manipulator_loader'] = $app->protect(function ($manipulator) use ($app) {
             if (is_callable($manipulator)) {
@@ -387,7 +433,6 @@ class ImageStackProvider implements ServiceProviderInterface {
         $app['image.path_rule_factory.pattern'] = $app->protect(function ($options) use ($app) {
             return new PatternPathRule($options['pattern'], $options['output']);
         });
-
         
         $app['image.cache_loader'] = $app->protect(function ($cache) use ($app) {
             if (is_callable($cache)) {
