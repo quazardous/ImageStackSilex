@@ -65,6 +65,7 @@ $app->register(new ImageStackProvider(), [
                 ['@^style/small/.*$@', '300x200'],
                 ['@^style/thumb/.*$@', '100'],
                 ['@^format/([0-9]+)x([0-9]+)/.*$@', function ($macthes) { return sprintf('%sx%s', $macthes[1], $macthes[2]); }],
+                ['@^original/.*$@', true], // original image
                 ['/.*/', false], // trigger a 404
             ],
         ],
