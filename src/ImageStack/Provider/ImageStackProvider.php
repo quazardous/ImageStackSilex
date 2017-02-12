@@ -21,6 +21,7 @@ use ImageStack\ImageManipulator\ThumbnailRule\PatternThumbnailRule;
 use ImageStack\ImageBackend\PathRule\PatternPathRule;
 use ImageStack\ImageBackend\PathRuleImageBackend;
 use ImageStack\ImageManipulator\WatermarkImageManipulator;
+use ImageStack\ImageBackend\ManipulatorImageBackend;
 
 class ImageStackProvider implements ServiceProviderInterface {
 	
@@ -123,6 +124,17 @@ class ImageStackProvider implements ServiceProviderInterface {
             unset($options['backend']);
             unset($options['cache']);
             return new CacheImageBackend($backend, $cache, $options);
+        });
+
+        $app['image.backend_factory.manipulator'] = $app->protect(function ($options) use ($app) {
+            $backend = $app['image.backend_loader']($options['backend']);
+            $manipulators = [];
+            if (isset($options['manipulators'])) {
+	            foreach ((array)$options['manipulators'] as $manipulator) {
+	                $manipulators[] = $app['image.manipulator_loader']($manipulator);
+	            }
+	        }
+            return new ManipulatorImageBackend($backend, $manipulators);
         });
 
         $app['image.backend_factory.path_rule'] = $app->protect(function ($options) use ($app) {
