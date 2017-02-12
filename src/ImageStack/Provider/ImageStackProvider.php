@@ -404,6 +404,9 @@ class ImageStackProvider implements ServiceProviderInterface {
             if (is_callable($rule)) {
                 return call_user_func($rule);
             }
+            if (is_string($rule)) {
+                $rule = ['driver' => $rule];
+            }
             if ([0, 1] === array_keys($rule)) {
                 // pattern rule shortcut
                 $rule = [
@@ -426,6 +429,9 @@ class ImageStackProvider implements ServiceProviderInterface {
         $app['image.path_rule_factory'] = $app->protect(function ($rule) use ($app) {
             if (is_callable($rule)) {
                 return call_user_func($rule);
+            }
+            if (is_string($rule)) {
+                $rule = ['driver' => $rule];
             }
             if ([0, 1] === array_keys($rule)) {
                 // pattern rule shortcut
